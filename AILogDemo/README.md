@@ -1,0 +1,123 @@
+# AI Log Demo
+
+## Project Description
+This project provides a complete local end-to-end prototype for log analysis, streaming, and anomaly detection using a stack of Dockerized services and Python-based machine learning. It demonstrates how to collect, process, classify, and visualize log data in real-time.
+
+## Technologies Used
+- **Kafka:** Distributed streaming platform for handling log data.
+- **Zookeeper:** Coordinates Kafka brokers.
+- **VictoriaMetrics:** High-performance, scalable, and cost-effective open-source time series database, compatible with Prometheus.
+- **Grafana:** Open-source platform for monitoring and observability, used for visualizing metrics.
+- **Python:** Used for log generation, consumption, ML model training, and anomaly detection.
+- **Docker & Docker Compose:** For containerization and orchestration of services.
+- **GitHub Actions:** For Continuous Integration/Continuous Delivery (CI/CD) workflows.
+
+## Architecture Diagram
+```
++-----------------+     +----------------+     +-------------------+     +-------------------+     +-----------------+
+| Kafka Producer  | --> |      Kafka     | --> |   Log Consumer    | --> | VictoriaMetrics   | --> |     Grafana     |
+| (Generates Logs)|     | (Log Streaming)|     | (Classifies Logs) |     | (Stores Metrics)  |     | (Visualizes Data)|
++-----------------+     +----------------+     +-------------------+     +-------------------+     +-----------------+
+                                                              ^
+                                                              |
+                                                              |
+                                                        +-------------------+
+                                                        | Anomaly Detector  |
+                                                        | (Reads Metrics,   |
+                                                        |  Sends Alerts)    |
+                                                        +-------------------+
+```
+
+## Pipeline Explanation
+- **Kafka Producer:** Generates synthetic log data (INFO, WARNING, ERROR, DEBUG) and streams it to the Kafka "logs" topic.
+- **Kafka Consumer:** Subscribes to the Kafka "logs" topic, consumes log entries, and uses a pre-trained Python ML model (TF-IDF + Logistic Regression) to classify them as "incident" or "preventive_action". It then increments internal counters for these classifications.
+- **VictoriaMetrics:** The Log Consumer pushes the incident and warning counts as metrics to VictoriaMetrics.
+- **Grafana Dashboard:** Grafana connects to VictoriaMetrics as a data source, allowing real-time visualization of the `log_incident_total` and `log_warning_total` metrics.
+- **AI Anomaly Detection:** (Future/Planned) A separate service will read metrics from VictoriaMetrics, compare current values against historical averages, and detect anomalies, triggering alerts.
+
+## Service Ports
+| Service          | Port   | Description                               |
+|------------------|--------|-------------------------------------------|
+| Kafka            | 9092   | Message broker (external access)          |
+| Zookeeper        | 2181   | Kafka coordination                        |
+| VictoriaMetrics  | 8428   | Metrics collection (HTTP API)             |
+| Grafana          | 3000   | Dashboard visualization (Web UI)          |
+| Log Producer     | N/A    | Runs as Docker service, no external port  |
+| Log Consumer     | N/A    | Runs as Docker service, no external port  |
+
+## Setup Instructions
+
+Follow these steps to get the AI Log Demo project up and running locally:
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/deeps-03/AI-Logs-demo.git
+    ```
+
+2.  **Navigate into the project directory:**
+    ```bash
+    cd AI-Logs-demo
+    ```
+
+3.  **Create and activate a Python virtual environment:**
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate  # On Linux/macOS
+    # For Windows: .\venv\Scripts\activate
+    ```
+    *(Ensure your terminal prompt changes to indicate the venv is active, e.g., `(venv) your_user@your_machine`)*
+
+4.  **Install Python dependencies:**
+    *(Run this command with the venv active)*
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+5.  **Build Docker images for the services:**
+    ```bash
+    docker-compose build
+    ```
+
+6.  **Start all services using Docker Compose:**
+    ```bash
+    docker-compose up -d
+    ```
+
+7.  **Train the ML model:**
+    This step generates `log_model.pkl` and `vectorizer.pkl` which are used by the `log-consumer`.
+    *(Run this command with the venv active)*
+    ```bash
+    python3 model_train.py
+    ```
+
+8.  **Access Grafana:**
+    Open your web browser and go to `http://localhost:3000`.
+    *   Default login: `admin` / `admin` (you will be prompted to change the password).
+    *   **Add VictoriaMetrics as a Data Source:**
+        *   Go to `Connections` -> `Data sources`.
+        *   Click `Add data source` and select `Prometheus`.
+        *   Set the URL to `http://victoria-metrics:8428`.
+        *   Click `Save & Test`.
+    *   **Create a Dashboard:**
+        *   Go to `Dashboards` -> `New dashboard`.
+        *   Click `Add new panel`.
+        *   In the "Query" tab, select your VictoriaMetrics data source.
+        *   Add queries for `log_incident_total` and `log_warning_total` (for time series graphs) or `sum(log_incident_total)` and `sum(log_warning_total)` (for Stat/Gauge panels).
+        *   Click `Apply` and then save your dashboard.
+
+9.  **Access VictoriaMetrics UI (Optional):**
+    You can access the VictoriaMetrics UI at `http://localhost:8428` to directly query metrics.
+
+10. **Stop all services:**
+    ```bash
+    docker-compose down
+    ```
+
+## Notes and Troubleshooting
+
+*   Ensure Docker Desktop (or your Docker environment) is running before starting services.
+*   If `docker-compose up -d` fails, check the logs of individual services (`docker-compose logs <service_name>`) for errors.
+*   If Python scripts fail with `ModuleNotFoundError`, ensure your virtual environment is activated and dependencies are installed (`pip install -r requirements.txt`).
+*   If Grafana shows "No data", double-check your data source URL (`http://victoria-metrics:8428`) and the time range selected on your dashboard.
+*   The `log_producer` and `log_consumer` run as Docker services. You can view their logs with `docker-compose logs -f log-producer` and `docker-compose logs -f log-consumer`.
+*   The anomaly detection feature is planned for future implementation and is not fully integrated in the initial setup instructions.
