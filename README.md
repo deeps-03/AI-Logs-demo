@@ -127,8 +127,16 @@ Follow these steps to get the AI Log Demo project up and running locally:
 ## Notes and Troubleshooting 💡
 
 *   Ensure Docker Desktop (or your Docker environment) is running before starting services.
-*   If `docker-compose up -d` fails, check the logs of individual services (`docker-compose logs <service_name>`) for errors.
+*   To check the status of all running Docker services, use: `docker-compose ps`
+*   To view logs for any specific service (e.g., `kafka`, `log-producer`, `log-consumer`), use: `docker-compose logs -f <service_name>`
+*   If `docker-compose up -d` fails, it will usually indicate which service failed to start.
+    *   **Identify the failing service:** Look for messages like `Error starting userland proxy: ...` or `Container <service_name> Exited`. You can also run `docker-compose ps` to see the status of all services (look for `Exit <code_number>` in the STATUS column).
+    *   **Check the logs:** Once you identify the problematic service, use `docker-compose logs -f <service_name>` to view its logs. Look for `ERROR`, `FATAL`, `Exception`, or `Failed` keywords.
+    *   **Common issues:**
+        *   **Port conflicts:** Another application might be using a port required by a Docker service.
+        *   **Dependency issues:** A service might fail if a service it depends on (e.g., Kafka depends on Zookeeper) is not yet ready or failed to start.
+        *   **Configuration errors:** Typos or incorrect values in `docker-compose.yml` or service-specific configuration files.
+        *   **Image issues:** Problems pulling or building a Docker image.
 *   If Python scripts fail with `ModuleNotFoundError`, ensure your virtual environment is activated and dependencies are installed (`pip install -r requirements.txt`).
 *   If Grafana shows "No data", double-check your data source URL (`http://victoria-metrics:8428`) and the time range selected on your dashboard.
-*   The `log_producer` and `log_consumer` run as Docker services. You can view their logs with `docker-compose logs -f log-producer` and `docker-compose logs -f log-consumer`.
 *   The anomaly detection feature is planned for future implementation and is not fully integrated in the initial setup instructions.
