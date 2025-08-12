@@ -138,5 +138,8 @@ Follow these steps to get the AI Log Demo project up and running locally:
         *   **Configuration errors:** Typos or incorrect values in `docker-compose.yml` or service-specific configuration files.
         *   **Image issues:** Problems pulling or building a Docker image.
 *   If Python scripts fail with `ModuleNotFoundError`, ensure your virtual environment is activated and dependencies are installed (`pip install -r requirements.txt`).
+*   **Deactivating the Virtual Environment:**
+    *   To deactivate your virtual environment, simply type `deactivate` in your terminal.
+    *   You should deactivate it when you are done working on this project or when you want to switch to another project that uses different Python dependencies. Deactivating returns your terminal to the system's default Python environment.
 *   If Grafana shows "No data", double-check your data source URL (`http://victoria-metrics:8428`) and the time range selected on your dashboard.
 *   The anomaly detection feature is planned for future implementation and is not fully integrated in the initial setup instructions.
