@@ -1,7 +1,6 @@
 # AI Log Demo 🚀
 
-[![GitHub Actions CI](https://github.com/deeps-03/AI-Logs-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/deeps-03/AI-Logs-demo/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 
 ## Project Description 📝
 This project provides a complete local end-to-end prototype for **real-time log analysis, streaming, and anomaly detection**. It leverages a robust stack of Dockerized services and Python-based machine learning to demonstrate how to collect, process, classify, and visualize log data efficiently.
