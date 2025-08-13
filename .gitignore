@@ -29,3 +29,4 @@ Thumbs.db
 # Virtual environments (redundant but good to be explicit)
 venv/
 .env/
+.env

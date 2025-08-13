@@ -74,9 +74,9 @@ if __name__ == "__main__":
     print(classification_report(y_test, y_pred))
 
     print("Saving model and vectorizer...")
-    with open("/Users/deepaksuresh/Desktop/AI Log Demo/AILogDemo/log_model.pkl", "wb") as f:
+    with open("/Users/deepaksuresh/Desktop/AI-Logs-demo/AILogDemo/log_model.pkl", "wb") as f:
         pickle.dump(model, f)
-    with open("/Users/deepaksuresh/Desktop/AI Log Demo/AILogDemo/vectorizer.pkl", "wb") as f:
+    with open("/Users/deepaksuresh/Desktop/AI-Logs-demo/AILogDemo/vectorizer.pkl", "wb") as f:
         pickle.dump(vectorizer, f)
 
     print("Model training complete. log_model.pkl and vectorizer.pkl saved.")

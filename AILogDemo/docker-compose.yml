@@ -36,6 +36,8 @@ services:
     image: grafana/grafana:latest
     ports:
       - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
     depends_on:
       - victoria-metrics
     networks:
@@ -57,6 +59,16 @@ services:
       - victoria-metrics
     networks:
       - log-streaming
+  anomaly-detector:
+    build:
+      context: .
+      dockerfile: Dockerfile.anomaly_detector
+    depends_on:
+      - victoria-metrics
+    networks:
+      - log-streaming
+    environment:
+      - GRAFANA_API_KEY=${GRAFANA_API_KEY}
 
 networks:
   log-streaming:
@@ -64,3 +76,4 @@ networks:
 
 volumes:
   victoria-metrics-data:
+  grafana-data:
