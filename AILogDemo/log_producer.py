@@ -12,6 +12,7 @@ producer = None
 MAX_RETRIES = 10
 RETRY_DELAY_SEC = 5
 
+# Attempt to connect to Kafka with a retry mechanism in case the broker is not yet available.
 for i in range(MAX_RETRIES):
     try:
         producer = KafkaProducer(
@@ -59,6 +60,8 @@ def generate_log():
         ]
     }
     
+    # Choose a log type with a weighted probability to simulate a more realistic log distribution.
+    # INFO logs are most common, while DEBUG logs are the least common.
     log_type = random.choices(log_types, weights=[0.5, 0.25, 0.2, 0.05], k=1)[0]
     message = random.choice(messages[log_type])
     
@@ -74,6 +77,7 @@ if __name__ == "__main__":
     print(f"Starting log producer for topic: {KAFKA_TOPIC}")
     print(f"Connecting to Kafka broker: {KAFKA_BROKER}")
     try:
+        # Continuously generate logs and send them to Kafka every 2 seconds.
         while True:
             log = generate_log()
             producer.send(KAFKA_TOPIC, log)

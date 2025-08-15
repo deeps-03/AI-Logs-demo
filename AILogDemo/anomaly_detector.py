@@ -5,6 +5,8 @@ import json
 
 # Load environment variables
 from dotenv import load_dotenv
+# Load environment variables from a .env file in the same directory.
+# This is used to securely store the Grafana API key.
 load_dotenv()
 
 GRAFANA_API_KEY = os.getenv("GRAFANA_API_KEY")
@@ -25,6 +27,7 @@ WARNING_THRESHOLD_MULTIPLIER = 2
 CURRENT_METRIC_RANGE = "5m"  # Last 5 minutes for current metrics
 HISTORICAL_METRIC_RANGE = "6h" # Last 6 hours for historical average
 
+# Fetches time-series data for a given metric from VictoriaMetrics.
 def fetch_metric(metric_name, time_range):
     query = f"{metric_name}[{time_range}]"
     params = {"query": query}
@@ -55,6 +58,7 @@ def calculate_average(metric_data):
         return 0
     return sum(all_values) / len(all_values)
 
+# Sends an annotation to Grafana to mark an anomaly on dashboards.
 def send_grafana_alert(message):
     headers = {
         "Authorization": f"Bearer {GRAFANA_API_KEY}",
@@ -75,6 +79,7 @@ def send_grafana_alert(message):
 
 def main():
     print("Starting Anomaly Detector...")
+    # This is the main loop that runs continuously to check for anomalies.
     while True:
         print(f"[{time.ctime()}] Checking for anomalies...")
 

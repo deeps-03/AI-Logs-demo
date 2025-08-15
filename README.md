@@ -83,24 +83,30 @@ Follow these steps to get the AI Log Demo project up and running locally:
     pip install -r AILogDemo/requirements.txt
     ```
 
-5.  **Build Docker images for the services:**
-    ```bash
-    docker-compose build
-    ```
-
-6.  **Start all services using Docker Compose:**
-    ```bash
-    docker-compose up -d
-    ```
-
-7.  **Train the ML model:**
+5.  **Train the ML model:**
     This step generates `log_model.pkl` and `vectorizer.pkl` which are used by the `log-consumer`.
-    *(Run this command with the venv active)*
+    *(Run this command with the venv active from the root `AI-Logs-demo` directory)*
     ```bash
     python3 AILogDemo/model_train.py
     ```
 
-8.  **Access Grafana:**
+6.  **Navigate into the AILogDemo directory:**
+    This is where the `docker-compose.yml` file is located. All `docker-compose` commands must be run from here.
+    ```bash
+    cd AILogDemo
+    ```
+
+7.  **Build Docker images for the services:**
+    ```bash
+    docker-compose build
+    ```
+
+8.  **Start all services using Docker Compose:**
+    ```bash
+    docker-compose up -d
+    ```
+
+9.  **Access Grafana:**
     Open your web browser and go to `http://localhost:3000`.
     *   Default login: `admin` / `admin` (you will be prompted to change the password).
     *   **Add VictoriaMetrics as a Data Source:**
@@ -115,10 +121,11 @@ Follow these steps to get the AI Log Demo project up and running locally:
         *   Add queries for `log_incident_total` and `log_warning_total` (for time series graphs) or `sum(log_incident_total)` and `sum(log_warning_total)` (for Stat/Gauge panels).
         *   Click `Apply` and then save your dashboard.
 
-9.  **Access VictoriaMetrics UI (Optional):**
+10. **Access VictoriaMetrics UI (Optional):**
     You can access the VictoriaMetrics UI at `http://localhost:8428` to directly query metrics.
 
-10. **Stop all services:**
+11. **Stop all services:**
+    Remember to run this from the `AILogDemo` directory.
     ```bash
     docker-compose down
     ```
@@ -190,8 +197,8 @@ The anomaly detection service uses a Grafana API key to send annotations (alerts
     *   **Copy the generated key immediately.** It will only be shown once.
 
 2.  **Store the Key in `.env`:**
-    *   In the root directory of your project (`AI-Logs-demo`), you will find a file named `.env`.
-    *   Open this file and add or update the `GRAFANA_API_KEY` variable with your copied key:
+    *   In the `AILogDemo` directory (the same directory as `docker-compose.yml`), create or open a file named `.env`.
+    *   Add or update the `GRAFANA_API_KEY` variable with your copied key:
 
     ```
     GRAFANA_API_KEY=your_generated_grafana_api_key_here
