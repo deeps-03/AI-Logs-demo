@@ -23,18 +23,17 @@ This project provides a complete local end-to-end prototype for **real-time log 
 
 ## Architecture Diagram 🗺️
 ```
-+-----------------+     +----------------+     +-------------------+     +-------------------+     +-----------------+
-| Kafka Producer  | --> |      Kafka     | --> |   Log Consumer    | --> | VictoriaMetrics   | --> |     Grafana     |
-| (Generates Logs)|     | (Log Streaming)|     | (Classifies Logs) |     | (Stores Metrics)  |     | (Visualizes Data)|
-+-----------------+     +----------------+     +-------------------+     +-------------------+     +-----------------+
-                                                              ^
-                                                              |
-                                                              |
-                                                        +-------------------+
-                                                        | Anomaly Detector  |
-                                                        | (Reads Metrics,   |
-                                                        |  Sends Alerts)    |
-                                                        +-------------------+
++-----------------+      +----------------+      +-------------------+      +-------------------+      +-----------------+
+|  Log Producer   |----->|     Kafka      |----->|   Log Consumer    |----->|  VictoriaMetrics  |----->|     Grafana     |
+| (Generates Logs)|      | (Log Streaming)|      | (Classifies Logs) |      |  (Stores Metrics) |      | (Visualizes Data)|
++-----------------+      +----------------+      +-------------------+      +---------+---------+      +--------+--------+
+                                                                                     |                         ^
+                                                                                     | (Reads Metrics)         | (Sends Alerts)
+                                                                                     |                         |
+                                                                           +---------▼---------+---------------+
+                                                                           | Anomaly Detector  |
+                                                                           | (Detects Anomalies)|
+                                                                           +-------------------+
 ```
 
 ## Pipeline Explanation ⚙️
