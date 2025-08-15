@@ -32,7 +32,7 @@ This project provides a complete local end-to-end prototype for **real-time log 
                                                                                      |                         |
                                                                            +---------▼---------+---------------+
                                                                            | Anomaly Detector  |
-                                                                           | (Detects Anomalies)|
+                                                                           |(Detects Anomalies)|
                                                                            +-------------------+
 ```
 
